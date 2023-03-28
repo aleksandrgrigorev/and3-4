@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Software</string>
+    <string name="author">author</string>
+    <string name="published_at">published at</string>
+    <string name="title">title</string>
+    <string name="software">Software</string>
+    <string name="date">date</string>
+</resources>

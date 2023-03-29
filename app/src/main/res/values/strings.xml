@@ -5,4 +5,6 @@
     <string name="title">title</string>
     <string name="software">Software</string>
     <string name="date">date</string>
+    <string name="source_name">(via %1$s)</string>
+    <string name="description">description</string>
 </resources>

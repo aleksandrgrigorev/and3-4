@@ -7,4 +7,7 @@
     <string name="date">date</string>
     <string name="source_name">(via %1$s)</string>
     <string name="description">description</string>
+    <string name="loading">Loading</string>
+    <string name="glide">Glide</string>
+    <string name="picasso">Picasso</string>
 </resources>

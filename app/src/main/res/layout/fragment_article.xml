@@ -51,6 +51,45 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title" />
 
+        <TextView
+            android:id="@+id/glide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/glide"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/glide_image"
+            app:layout_constraintTop_toBottomOf="@id/glide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/glide" />
+
+        <TextView
+            android:id="@+id/picasso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/picasso"
+            app:layout_constraintTop_toBottomOf="@id/glide_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/picasso_image"
+            app:layout_constraintTop_toBottomOf="@id/picasso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/picasso" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

@@ -7,13 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.grigorev.and3.databinding.NewsItemBinding
 import java.text.SimpleDateFormat
+import java.util.*
 
 class NewsAdapter(
-    private val authors: List<String>,
-    private val titles: List<String>,
-    private val publishedAt: List<String>,
-    private val sourceNames: List<String>,
-    private val descriptions: List<String>,
+    private val articles: List<Article>
 ) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     inner class ViewHolder(binding: NewsItemBinding) :
@@ -32,28 +29,33 @@ class NewsAdapter(
     }
 
     override fun onBindViewHolder(holder: NewsAdapter.ViewHolder, position: Int) {
-        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        val formatter = SimpleDateFormat("dd.MM.yyyy HH:mm")
-        val publishedAtFormatted = parser.parse(publishedAt[position])?.let { formatter.format(it) }
+        val article = articles[position]
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
+        val formatter = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ENGLISH)
+        val publishedAtFormatted = parser.parse(article.publishedAt)?.let { formatter.format(it) }
 
-        holder.itemAuthor.text = authors[position]
-        holder.itemTitle.text = titles[position]
-        holder.itemPublishedAt.text = publishedAtFormatted
+        holder.apply {
 
-        holder.newsItem.setOnClickListener { v ->
-            val activity = v?.context as AppCompatActivity
-            val articleFragment = ArticleFragment()
+            itemAuthor.text = article.author
+            itemTitle.text = article.title
+            itemPublishedAt.text = publishedAtFormatted
 
-            val articleFragmentBundle = Bundle()
-            articleFragmentBundle.putString("title", titles[position])
-            articleFragmentBundle.putString("sourceName", sourceNames[position])
-            articleFragmentBundle.putString("description", descriptions[position])
-            articleFragment.arguments = articleFragmentBundle
+            newsItem.setOnClickListener { v ->
+                val activity = v?.context as AppCompatActivity
+                val articleFragment = ArticleFragment()
 
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, articleFragment).addToBackStack(null).commit()
+                val articleFragmentBundle = Bundle()
+                articleFragmentBundle.putString("title", article.title)
+                articleFragmentBundle.putString("sourceName", article.source.name)
+                articleFragmentBundle.putString("description", article.description)
+                articleFragmentBundle.putString("urlToImage", article.urlToImage)
+                articleFragment.arguments = articleFragmentBundle
+
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayout, articleFragment).addToBackStack(null).commit()
+            }
         }
     }
 
-    override fun getItemCount(): Int = titles.size
+    override fun getItemCount(): Int = articles.size
 }

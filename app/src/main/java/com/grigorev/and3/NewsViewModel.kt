@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class NewsViewModel: ViewModel() {
+class NewsViewModel : ViewModel() {
+
     var news = MutableLiveData<List<Article>>()
 
     fun loadNews(category: String) {

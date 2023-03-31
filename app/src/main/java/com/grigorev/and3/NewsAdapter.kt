@@ -1,20 +1,24 @@
 package com.grigorev.and3
 
-import android.os.Bundle
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.grigorev.and3.databinding.NewsItemBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
+const val TITLE = "title"
+const val SOURCE_NAME = "sourceName"
+const val DESCRIPTION = "description"
+const val IMAGE_URL = "imageUrl"
+const val NEWS_URL = "newsUrl"
+
 class NewsAdapter(
     private val articles: List<Article>
 ) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
-    inner class ViewHolder(binding: NewsItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: NewsItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         val itemAuthor = binding.author
         val itemTitle = binding.title
@@ -40,19 +44,16 @@ class NewsAdapter(
             itemTitle.text = article.title
             itemPublishedAt.text = publishedAtFormatted
 
-            newsItem.setOnClickListener { v ->
-                val activity = v?.context as AppCompatActivity
-                val articleFragment = ArticleFragment()
+            newsItem.setOnClickListener {
+                val articleActivityIntent = Intent(newsItem.context, ArticleActivity::class.java)
+                articleActivityIntent
+                    .putExtra(TITLE, article.title)
+                    .putExtra(SOURCE_NAME, article.source.name)
+                    .putExtra(DESCRIPTION, article.description)
+                    .putExtra(IMAGE_URL, article.urlToImage)
+                    .putExtra(NEWS_URL, article.url)
 
-                val articleFragmentBundle = Bundle()
-                articleFragmentBundle.putString("title", article.title)
-                articleFragmentBundle.putString("sourceName", article.source.name)
-                articleFragmentBundle.putString("description", article.description)
-                articleFragmentBundle.putString("urlToImage", article.urlToImage)
-                articleFragment.arguments = articleFragmentBundle
-
-                activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayout, articleFragment).addToBackStack(null).commit()
+                newsItem.context.startActivity(articleActivityIntent)
             }
         }
     }

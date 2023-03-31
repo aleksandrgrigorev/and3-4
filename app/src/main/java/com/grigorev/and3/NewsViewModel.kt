@@ -9,11 +9,11 @@ import kotlinx.coroutines.launch
 class NewsViewModel: ViewModel() {
     var news = MutableLiveData<List<Article>>()
 
-    fun loadNews() {
+    fun loadNews(category: String) {
         var articles: List<Article>
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                articles = Api.request.getNews().articles
+                articles = Api.request.getNews(category).articles
             } catch (e: Exception) {
                 articles = emptyList()
             }

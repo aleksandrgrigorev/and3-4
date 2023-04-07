@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grigorev.and3.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
@@ -37,39 +39,54 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
 
         newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
-        newsViewModel.loadNews(selectedCategory)
-        newsViewModel.news.observe(this) { articles ->
-            val adapter = NewsAdapter(articles)
-            binding.newsList.adapter = adapter
 
-            swipeRefreshLayout = binding.swipeRefreshLayout
+        val dialog = LoadingDialog(this)
 
-            swipeRefreshLayout.setOnRefreshListener {
-                swipeRefreshLayout.isRefreshing = true
+        lifecycleScope.launch {
+            newsViewModel.state.collect {
+                when (it) {
+                    is State.Loading -> {
+                        dialog.startDialog()
+                        newsViewModel.loadNews(selectedCategory)
+                    }
+                    is State.Content -> {
+                        dialog.dismissDialog()
+                        val categoryName =
+                            selectedCategory.replaceFirstChar { it.uppercase() }
+                        binding.customToolbar.title = categoryName
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Showing news in category: $categoryName",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        val adapter = NewsAdapter(articles = it.news)
+                        binding.newsList.adapter = adapter
 
-                try {
-                    newsViewModel.loadNews(selectedCategory)
-                    Toast.makeText(this, "Page refreshed", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Error")
-                        .setMessage("$e")
-                        .create()
-                        .show()
+                        swipeRefreshLayout = binding.swipeRefreshLayout
+
+                        swipeRefreshLayout.setOnRefreshListener {
+                            swipeRefreshLayout.isRefreshing = true
+                            newsViewModel.loadNews(selectedCategory)
+                            swipeRefreshLayout.isRefreshing = false
+                        }
+                    }
+                    is State.Error -> {
+                        val alertDialog = AlertDialog.Builder(this@MainActivity)
+                            .setTitle("Error")
+                            .setMessage(it.error)
+                        alertDialog.show()
+                    }
                 }
-                swipeRefreshLayout.isRefreshing = false
+
             }
         }
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        parent.selectedItem.toString().let { it ->
-            selectedCategory = it
-            newsViewModel.loadNews(it)
-            val categoryName = it.replaceFirstChar { it.uppercase() }
-            binding.customToolbar.title = categoryName
-            Toast.makeText(this, "Showing news in category: $categoryName", Toast.LENGTH_SHORT)
-                .show()
+        parent.selectedItem.toString().let { categoryName ->
+            selectedCategory = categoryName
+            newsViewModel.loadNews(categoryName)
         }
     }
 

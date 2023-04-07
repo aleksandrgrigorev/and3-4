@@ -16,7 +16,7 @@ const val NEWS_URL = "newsUrl"
 
 class NewsAdapter(
     private val articles: List<Article>
-) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+) :  RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     inner class ViewHolder(binding: NewsItemBinding) : RecyclerView.ViewHolder(binding.root) {
 

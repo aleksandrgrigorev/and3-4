@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -40,26 +41,24 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         newsViewModel.news.observe(this) { articles ->
             val adapter = NewsAdapter(articles)
             binding.newsList.adapter = adapter
-        }
 
-        val loadingDialog = LoadingDialog(this@MainActivity)
+            swipeRefreshLayout = binding.swipeRefreshLayout
 
-        swipeRefreshLayout = binding.swipeRefreshLayout
+            swipeRefreshLayout.setOnRefreshListener {
+                swipeRefreshLayout.isRefreshing = true
 
-        swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = true
-            loadingDialog.startLoadingDialog()
-            try {
-                newsViewModel.loadNews(selectedCategory)
-            } catch (e: Exception) {
-                loadingDialog.dismissDialog()
-                AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage("$e")
-                    .show()
+                try {
+                    newsViewModel.loadNews(selectedCategory)
+                    Toast.makeText(this, "Page refreshed", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("$e")
+                        .create()
+                        .show()
+                }
+                swipeRefreshLayout.isRefreshing = false
             }
-            loadingDialog.dismissDialog()
-            swipeRefreshLayout.isRefreshing = false
         }
     }
 
@@ -67,7 +66,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         parent.selectedItem.toString().let { it ->
             selectedCategory = it
             newsViewModel.loadNews(it)
-            binding.customToolbar.title = it.replaceFirstChar { it.uppercase() }
+            val categoryName = it.replaceFirstChar { it.uppercase() }
+            binding.customToolbar.title = categoryName
+            Toast.makeText(this, "Showing news in category: $categoryName", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

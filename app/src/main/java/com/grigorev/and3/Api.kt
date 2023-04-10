@@ -5,18 +5,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-const val BASE_URL = "https://newsapi.org/v2/"
-const val API_KEY = "17e5c12b76344b1fa54a7fb5ec177150"
-const val NEWS_NUMBER = "20"
-
 interface Api {
 
-    @GET("everything?sortBy=publishedAt&pageSize=$NEWS_NUMBER&apiKey=$API_KEY")
+    @GET("everything?sortBy=publishedAt&language=en&pageSize=20&apiKey=${BuildConfig.API_KEY}")
     suspend fun getNews(@Query("q") category: String): NewsApiResponse
 
     companion object {
-        val request: Api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+        val apiClient: Api = Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(Api::class.java)

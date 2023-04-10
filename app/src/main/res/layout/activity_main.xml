@@ -28,8 +28,8 @@
     <Spinner
         android:id="@+id/newsCategorySpinner"
         android:layout_width="match_parent"
-        android:entries="@array/categories_array"
         android:layout_height="@dimen/spinner_height"
+        android:entries="@array/categories_array"
         android:padding="@dimen/spinner_padding" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

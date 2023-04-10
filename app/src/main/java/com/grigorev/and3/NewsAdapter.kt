@@ -40,7 +40,7 @@ class NewsAdapter(
 
         holder.apply {
 
-            itemAuthor.text = article.author
+            itemAuthor.text = article.author ?: article.source.name
             itemTitle.text = article.title
             itemPublishedAt.text = publishedAtFormatted
 

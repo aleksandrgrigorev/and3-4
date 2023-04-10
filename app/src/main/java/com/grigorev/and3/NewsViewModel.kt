@@ -17,7 +17,7 @@ class NewsViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _state.emit(State.Loading)
-                articles = Api.request.getNews(category).articles
+                articles = Api.apiClient.getNews(category).articles
                 _state.emit(State.Content(articles))
             } catch (e: Exception) {
                 _state.emit(State.Error("$e"))

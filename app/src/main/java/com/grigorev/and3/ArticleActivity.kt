@@ -14,13 +14,6 @@ class ArticleActivity : AppCompatActivity() {
         binding = ActivityArticleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val toolbar = binding.customToolbar
-        setSupportActionBar(toolbar)
-
-        val title = binding.newsTitle
-        val sourceName = binding.sourceName
-        val description = binding.description
-        val further = binding.furtherReading
         val glideImage = binding.glideImage
         val picassoImage = binding.picassoImage
 
@@ -30,10 +23,12 @@ class ArticleActivity : AppCompatActivity() {
         val mUrl = intent?.getStringExtra(NEWS_URL)
         val mImage = intent?.getStringExtra(IMAGE_URL)
 
-        title.text = mTitle
-        sourceName.text = getString(R.string.source_name, mSourceName)
-        description.text = mDescription
-        further.text = getString(R.string.url, mUrl)
+        binding.apply {
+            setSupportActionBar(customToolbar)
+            newsTitle.text = mTitle
+            sourceName.text = getString(R.string.source_name, mSourceName)
+            description.text = mDescription
+            furtherReading.text = getString(R.string.url, mUrl)}
 
         Glide.with(this)
             .load(mImage)

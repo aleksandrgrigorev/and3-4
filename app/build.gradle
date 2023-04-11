@@ -39,12 +39,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders.usesCleartextTraffic = false
             buildConfigField "String", "BASE_URL", '"https://newsapi.org/v2/"'
-            buildConfigField "String", "API_KEY", '"17e5c12b76344b1fa54a7fb5ec177150"'
+            buildConfigField "String", "API_KEY", '"feec2490ff9d48c68088ef18f0ae4316"'
         }
         debug {
             manifestPlaceholders.usesCleartextTraffic = true
             buildConfigField "String", "BASE_URL", '"https://newsapi.org/v2/"'
-            buildConfigField "String", "API_KEY", '"17e5c12b76344b1fa54a7fb5ec177150"'
+            buildConfigField "String", "API_KEY", '"feec2490ff9d48c68088ef18f0ae4316"'
         }
     }
 }

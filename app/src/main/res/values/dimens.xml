@@ -4,4 +4,5 @@
     <dimen name="common_margin">12dp</dimen>
     <dimen name="spinner_padding">16dp</dimen>
     <dimen name="spinner_height">60dp</dimen>
+    <dimen name="circleRadius">100dp</dimen>
 </resources>

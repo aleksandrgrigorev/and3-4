@@ -1,5 +1,6 @@
 package com.grigorev.and3
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grigorev.and3.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
@@ -38,6 +40,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             adapter = arrayAdapter
         }
 
+        binding.customCircleActivityButton.setOnClickListener {
+            this.startActivity(Intent(this, CustomCircleActivity::class.java))
+        }
+
         newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
 
         val dialog = LoadingDialog(this)
@@ -62,6 +68,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                             .show()
                         val adapter = NewsAdapter(articles = it.news)
                         binding.newsList.adapter = adapter
+                        binding.newsList.addItemDecoration(
+                            DividerItemDecoration(binding.newsList.context, DividerItemDecoration.VERTICAL)
+                        )
 
                         swipeRefreshLayout = binding.swipeRefreshLayout
 

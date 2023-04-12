@@ -34,13 +34,22 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, newsCategories)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.newsCategorySpinner.apply {
-            onItemSelectedListener = this@MainActivity
-            adapter = arrayAdapter
-        }
 
-        binding.customCircleActivityButton.setOnClickListener {
-            this.startActivity(Intent(this, CustomCircleActivity::class.java))
+        binding.apply {
+            newsCategorySpinner.apply {
+                onItemSelectedListener = this@MainActivity
+                adapter = arrayAdapter
+            }
+            customCircleActivityButton.setOnClickListener {
+                this@MainActivity.startActivity(
+                    Intent(this@MainActivity, CustomCircleActivity::class.java)
+                )
+            }
+            mapsActivityButton.setOnClickListener {
+                this@MainActivity.startActivity(
+                    Intent(this@MainActivity, MapsActivity::class.java)
+                )
+            }
         }
 
         newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
@@ -86,7 +95,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         alertDialog.show()
                     }
                 }
-
             }
         }
     }

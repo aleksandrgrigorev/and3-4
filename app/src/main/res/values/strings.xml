@@ -12,6 +12,7 @@
     <string name="picasso">Picasso</string>
     <string name="url">Further reading: %1$s</string>
     <string name="open_circle_button">BEHOLD THE CIRCLE!</string>
+    <string name="open_maps">OPEN THE MAP!</string>
     <string-array name="categories_array">
         <item>software</item>
         <item>technology</item>

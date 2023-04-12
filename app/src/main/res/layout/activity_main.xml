@@ -25,13 +25,29 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <Button
-        android:id="@+id/customCircleActivityButton"
+    <TableRow
+        android:id="@+id/tableRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/open_circle_button"
-        android:textColor="@color/white"
-        />
+        android:gravity="center">
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/customCircleActivityButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_circle_button"
+            android:textColor="?android:textColorPrimary" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/mapsActivityButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_maps"
+            android:textColor="?android:textColorPrimary" />
+
+    </TableRow>
 
     <Spinner
         android:id="@+id/newsCategorySpinner"
@@ -52,7 +68,7 @@
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-            tools:listitem="@layout/news_item"/>
+            tools:listitem="@layout/news_item" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

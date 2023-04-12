@@ -26,9 +26,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val toolbar = binding.customToolbar
-        setSupportActionBar(toolbar)
+        
+        setSupportActionBar(binding.customToolbar)
 
         newsCategories = resources.getStringArray(R.array.categories_array).toList()
         selectedCategory = newsCategories.first()

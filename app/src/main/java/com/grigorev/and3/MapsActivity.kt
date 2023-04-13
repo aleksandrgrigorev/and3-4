@@ -14,6 +14,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.grigorev.and3.databinding.ActivityMapsBinding
+import kotlin.math.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -79,5 +80,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
         googleMap.addMarker(markerOptions)
+
+        val randomMapPositions = generateRandomMapPositions(latLng)
+        for (i in randomMapPositions) {
+            googleMap.addMarker(MarkerOptions().position(i).title("Position $i"))
+        }
+    }
+
+    private fun generateRandomMapPositions(currentLocation: LatLng): List<LatLng> {
+        val positions = mutableListOf<LatLng>()
+        val earthRadius = 6371.0
+        val maxDistance = 10.0
+        val maxMarkers = 5
+
+        repeat(maxMarkers) {
+            val distance = sqrt(Math.random()) * maxDistance
+            val bearing = Math.random() * 2 * PI
+
+            val lat1 = Math.toRadians(currentLocation.latitude)
+            val lng1 = Math.toRadians(currentLocation.longitude)
+            val lat2 = asin(sin(lat1) * cos(distance / earthRadius) + cos(lat1) *
+                    sin(distance / earthRadius) * cos(bearing))
+            val lng2 = lng1 + atan2(sin(bearing) * sin(distance / earthRadius) * cos(lat1),
+                cos(distance / earthRadius) - sin(lat1) * sin(lat2))
+
+            positions.add(LatLng(Math.toDegrees(lat2), Math.toDegrees(lng2)))
+        }
+
+        return positions
     }
 }

@@ -25,10 +25,12 @@ class ArticleActivity : AppCompatActivity() {
 
         binding.apply {
             setSupportActionBar(customToolbar)
+            newsTitle.transitionName = "Title"
             newsTitle.text = mTitle
             sourceName.text = getString(R.string.source_name, mSourceName)
             description.text = mDescription
-            furtherReading.text = getString(R.string.url, mUrl)}
+            furtherReading.text = getString(R.string.url, mUrl)
+        }
 
         Glide.with(this)
             .load(mImage)

@@ -1,12 +1,15 @@
 package com.grigorev.and3
 
+import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.grigorev.and3.databinding.NewsItemBinding
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 const val TITLE = "title"
 const val SOURCE_NAME = "sourceName"
@@ -42,6 +45,7 @@ class NewsAdapter(
 
             itemAuthor.text = article.author ?: article.source.name
             itemTitle.text = article.title
+            itemTitle.transitionName = "Title"
             itemPublishedAt.text = publishedAtFormatted
 
             newsItem.setOnClickListener {
@@ -53,7 +57,13 @@ class NewsAdapter(
                     .putExtra(IMAGE_URL, article.urlToImage)
                     .putExtra(NEWS_URL, article.url)
 
-                newsItem.context.startActivity(articleActivityIntent)
+                val options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(
+                        newsItem.context as Activity,
+                        itemTitle,
+                        "Title"
+                    )
+                newsItem.context.startActivity(articleActivityIntent, options.toBundle())
             }
         }
     }

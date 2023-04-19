@@ -1,63 +1,94 @@
 package com.grigorev.and3
 
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grigorev.and3.databinding.ActivityMainBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "https://newsapi.org/v2/"
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
-
-    private var authorsList = mutableListOf<String>()
-    private var titlesList = mutableListOf<String>()
-    private var publishedAtList = mutableListOf<String>()
+    private lateinit var newsViewModel: NewsViewModel
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var newsCategories: List<String>
+    private lateinit var selectedCategory: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        makeAPIRequest()
-    }
+        val toolbar = binding.customToolbar
+        setSupportActionBar(toolbar)
 
-    private fun addToList(author: String, title: String, publishedAt: String) {
-        authorsList.add(author)
-        titlesList.add(title)
-        publishedAtList.add(publishedAt)
-    }
+        newsCategories = resources.getStringArray(R.array.categories_array).toList()
+        selectedCategory = newsCategories.first()
 
-    private fun makeAPIRequest() {
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiRequest::class.java)
+        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, newsCategories)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.newsCategorySpinner.apply {
+            onItemSelectedListener = this@MainActivity
+            adapter = arrayAdapter
+        }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                val response = api.getNews()
+        newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
 
-                for (article in response.articles) {
-                    Log.i("MainActivity", "Result = $article")
-                    addToList(article.author, article.title, article.publishedAt)
+        val dialog = LoadingDialog(this)
+
+        lifecycleScope.launch {
+            newsViewModel.state.collect {
+                when (it) {
+                    is State.Loading -> {
+                        dialog.startDialog()
+                        newsViewModel.loadNews(selectedCategory)
+                    }
+                    is State.Content -> {
+                        dialog.dismissDialog()
+                        val categoryName =
+                            selectedCategory.replaceFirstChar { it.uppercase() }
+                        binding.customToolbar.title = categoryName
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Showing news in category: $categoryName",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        val adapter = NewsAdapter(articles = it.news)
+                        binding.newsList.adapter = adapter
+
+                        swipeRefreshLayout = binding.swipeRefreshLayout
+
+                        swipeRefreshLayout.setOnRefreshListener {
+                            swipeRefreshLayout.isRefreshing = true
+                            newsViewModel.loadNews(selectedCategory)
+                            swipeRefreshLayout.isRefreshing = false
+                        }
+                    }
+                    is State.Error -> {
+                        val alertDialog = AlertDialog.Builder(this@MainActivity)
+                            .setTitle("Error")
+                            .setMessage(it.error)
+                        alertDialog.show()
+                    }
                 }
 
-                withContext(Dispatchers.Main) {
-                    val adapter = NewsAdapter(authorsList, titlesList, publishedAtList)
-                    binding.newsList.adapter = adapter
-                }
-
-            } catch (e: Exception) {
-                Log.e("MainActivity", e.toString())
             }
         }
     }
+
+    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+        parent.selectedItem.toString().let { categoryName ->
+            selectedCategory = categoryName
+            newsViewModel.loadNews(categoryName)
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 }

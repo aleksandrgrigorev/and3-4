@@ -12,7 +12,11 @@ class NewsViewModel : ViewModel() {
     private val _state = MutableStateFlow<State>(State.Loading)
     val state = _state.asStateFlow()
 
-    fun loadNews(category: String) {
+    fun send(event: LoadNewsEvent) {
+        loadNews(category = event.category)
+    }
+
+    private fun loadNews(category: String) {
         var articles: List<Article>
         viewModelScope.launch(Dispatchers.IO) {
             try {

@@ -10,7 +10,6 @@ import com.grigorev.and3.databinding.NewsItemBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 const val TITLE = "title"
 const val SOURCE_NAME = "sourceName"
 const val DESCRIPTION = "description"

@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 when (it) {
                     is State.Loading -> {
                         dialog.startDialog()
-                        newsViewModel.loadNews(selectedCategory)
+                        newsViewModel.send(LoadNewsEvent(category = selectedCategory))
                     }
                     is State.Content -> {
                         dialog.dismissDialog()
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
                         swipeRefreshLayout.setOnRefreshListener {
                             swipeRefreshLayout.isRefreshing = true
-                            newsViewModel.loadNews(selectedCategory)
+                            newsViewModel.send(LoadNewsEvent(category = selectedCategory))
                             swipeRefreshLayout.isRefreshing = false
                         }
                     }
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
         parent.selectedItem.toString().let { categoryName ->
             selectedCategory = categoryName
-            newsViewModel.loadNews(categoryName)
+            newsViewModel.send(LoadNewsEvent(category = selectedCategory))
         }
     }
 
